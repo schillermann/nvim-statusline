@@ -1,28 +1,15 @@
 local api = vim.api
 local statusline = api.nvim_create_augroup("statusline", {})
 
--- vim.opt.statusline = "active statusline"
-
-
-api.nvim_create_autocmd({"WinEnter", "BufEnter"}, {
+api.nvim_create_autocmd({"WinEnter", "BufEnter", "CursorMoved"}, {
   pattern = "*",
   callback = function(event)
+    local statusline = require("nvim-statusline")
     if vim.bo.filetype == "NvimTree" then
-      vim.opt_local.statusline = "feature/foo"
+      statusline.print_nvimtree_statusline()
       return
     end
-    vim.opt_local.statusline = "  " .. vim.fn.expand("%:.") .. "  1  0 󰉻 " .. vim.fn.winline()
+    statusline.print_editor_statusline()
   end,
   group = statusline
-})
- 
-api.nvim_create_autocmd({"WinLeave", "BufLeave"}, {
-  pattern = "*",
-  callback = function()
-    if vim.bo.filetype == "NvimTree" then
-      return
-    end
-    vim.opt_local.statusline = "inactive statusline"
-  end,
-  group = statuslineGroup
 })
