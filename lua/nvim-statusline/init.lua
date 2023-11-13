@@ -13,7 +13,13 @@ function Module.statusline_editor()
   if (project_path == "") then
     return "  [No File]"
   end
-  return string.format("  %s  1  0 󰉻 %%l/%%L", project_path)
+
+  local errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
+  local warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
+  local info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
+  local hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINTS })
+
+  return string.format("  %s  %d  %d 󰉻 %%l/%%L", project_path, errors, warnings  + info + hints)
 end
 
 function Module.set_statusline()
