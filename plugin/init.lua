@@ -1,4 +1,4 @@
-vim.api.nvim_create_autocmd({"WinEnter", "BufEnter", "InsertLeave"}, {
+vim.api.nvim_create_autocmd({"BufEnter", "CursorHold", "InsertLeave"}, {
   pattern = "*",
   callback = function(event)
     require("nvim-statusline").set_statusline()

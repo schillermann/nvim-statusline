@@ -1,5 +1,8 @@
 local Module = {}
 
+vim.api.nvim_command("highlight NvimStatuslineErrors guibg=#6f1313")
+vim.api.nvim_command("highlight NvimStatuslineWarnings guibg=#264f78")
+
 function Module.statusline_explorer()
   local git_branch = vim.fn.system("git branch --show-current 2> /dev/null | tr -d '\n'")
   if (git_branch == "") then
@@ -9,17 +12,25 @@ function Module.statusline_explorer()
 end
 
 function Module.statusline_editor()
-  local project_path = vim.fn.expand("%:.")
-  if (project_path == "") then
-    return "  [No File]"
-  end
-
   local errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
   local warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
   local info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
   local hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINTS })
 
-  return string.format("  %s  %d  %d 󰉻 %%l/%%L", project_path, errors, warnings  + info + hints)
+  local statusline = "  %t %=󰉻 %l/%L "
+  if (errors > 0) then
+    statusline = statusline .. "%#NvimStatuslineErrors#  " .. errors .. " %*"
+  else
+    statusline = statusline .. "  0 "
+  end
+
+  local warnings_info_hints = warnings + info + hints
+  if (warnings_info_hints > 0) then
+    statusline = statusline .. "%#NvimStatuslineWarnings#  " .. warnings_info_hints .. " %*"
+  else
+    statusline = statusline .. "  0 "
+  end
+  return statusline
 end
 
 function Module.set_statusline()
