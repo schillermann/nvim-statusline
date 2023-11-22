@@ -12,10 +12,8 @@ function Module.statusline_explorer()
 end
 
 function Module.statusline_editor()
-  local errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
-  local warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
-  local info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
-  local hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINTS })
+  local errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR }) + #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
+  local info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO }) + #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINTS })
 
   local statusline = "  %t %=󰉻 %l/%L "
   if (errors > 0) then
@@ -24,11 +22,10 @@ function Module.statusline_editor()
     statusline = statusline .. "  0 "
   end
 
-  local warnings_info_hints = warnings + info + hints
-  if (warnings_info_hints > 0) then
-    statusline = statusline .. "%#NvimStatuslineWarnings#  " .. warnings_info_hints .. " %*"
+  if (info > 0) then
+    statusline = statusline .. "%#NvimStatuslineWarnings#  " .. info .. " %*"
   else
-    statusline = statusline .. "  0 "
+    statusline = statusline .. "  0 "
   end
   return statusline
 end
